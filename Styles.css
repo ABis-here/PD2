@@ -11,12 +11,12 @@ Body {
     background: linear-gradient(
         to bottom, 
         #c62828 0%,
-        #b91d1d 10%,
-        #8d3d1f 20%,
-        #2e7d32 40%,
-        #66bb6a 70%,
-        #a5d6a7 80%,
-        #ffffff 100%
+        #b91d1d 20%,
+        #8d3d1f 40%,
+        #2e7d32 60%,
+        #19951f 70%,
+        #037407 80%,
+        #015304 100%
     );
     font-family: Arial, sans-serif;
 }

@@ -6,65 +6,110 @@
     <title>Kino Duomenys</title>
     <link href="https://fonts.googleapis.com/css2?family=Snowburst+One&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="Styles.css"> 
+    <link rel="stylesheet" href="Styles.css">
 </head>
 <body>
-    <header class="bg-danger p-3 mb-4">
-        <div class="container d-flex justify-content-between align-items-center">
-            <!-- Kairė pusė -->
-            <h1 class="h3 m-0">
-                <a href="index.html" class="text-white text-decoration-none">Kino Duomenys</a>
-            </h1>
 
-            <!-- Dešinė pusė -->
-            <div class="d-flex gap-2">
-                <a href="login.html" class="btn btn-outline-light">Prisijungti</a>
-                <div class="dropdown">
-                    <button class="btn btn-outline-light dropdown-toggle" type="button"
-                            id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        Augustas
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="#">Mano profilis</a></li>
-                        <li><a class="dropdown-item" href="#">Mano vertinimai</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="logout.php">Atsijungti</a></li>
-                    </ul>
-                </div>
+<header class="bg-danger p-3 mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <!-- Kairė pusė: logotipas, kuris veda į pradinį -->
+        <h1 class="h3 m-0">
+            <a href="index.html" class="text-white text-decoration-none">Kino Duomenys</a>
+        </h1>
+
+        <!-- Dešinė pusė: prisijungimas + vartotojas -->
+        <div class="d-flex gap-2">
+            <a href="login.html" class="btn btn-outline-light">Prisijungti</a>
+
+            <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle" type="button"
+                        id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Augustas
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="#">Mano profilis</a></li>
+                    <li><a class="dropdown-item" href="#">Mano vertinimai</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#">Atsijungti</a></li>
+                </ul>
             </div>
-
         </div>
+    </div>
 </header>
-    <main class="container mt-4">
-    <div class="row">
-        <!-- Kairys stulpelis: meniu -->
-        <aside class="col-md-3 mb-3">
-            <div class="list-group">
-                <a href="movies.html" class="list-group-item list-group-item-action">Filmai</a>
-            </div>
-        </aside>
 
-        <!-- Dešinys stulpelis: turinys -->
-        <section class="col-md-9">
+<main class="container mt-4">
+
+    <!-- Pagrindinė hero korta -->
+    <section class="row justify-content-center mb-4">
+        <div class="col-lg-10">
             <div class="card bg-dark text-light">
                 <div class="card-body">
                     <h2 class="card-title">Sveiki atvykę į „Kino Duomenys“</h2>
                     <p class="card-text">
                         Čia galėsite peržiūrėti filmus, matyti jų įvertinimus ir komentarus.
-                        Vėliau pridėsime prisijungimą, kad vartotojai galėtų palikti savo nuomonę.
+                        Vėliau pridėsime prisijungimą ir vartotojų profilius, kad kiekvienas galėtų palikti savo nuomonę.
+                    </p>
+                    <a href="movies.html" class="btn btn-success btn-lg">
+                        🎬 Peržiūrėti filmų sąrašą
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Apatinės kortelės -->
+    <section class="row g-3">
+
+        <!-- Filmai – pagrindinė skiltis -->
+        <div class="col-md-4">
+            <div class="card h-100 border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Filmai</h5>
+                    <p class="card-text">
+                        Peržiūrėkite visus filmus ir jų įvertinimus.
+                    </p>
+                    <a href="movies.html" class="btn btn-success w-100">
+                        Eiti į filmus
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informacinė kortelė 1 -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Vartotojų įvertinimai</h5>
+                    <p class="card-text">
+                        Matysite, ką kiti mano apie filmus –
+                        komentarai ir balai pagal 10 balų skalę.
                     </p>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+
+        <!-- Informacinė kortelė 2 -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Ateities planai</h5>
+                    <p class="card-text">
+                        Ateityje pridėsime vartotojų profilius ir
+                        asmeninį mėgstamiausių filmų sąrašą.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </section>
 </main>
 
-    <footer class="text-center text-lg-start mt-4">
-        <div class="text-center p-3">
-            © 2024 Kino Duomenys
-            Autoriai - Augustas Baublys, Benediktas Gudžinskas
-        </div>
-    </footer>
-    
+<footer class="text-center text-lg-start mt-4">
+    <div class="text-center p-3">
+        © 2024 Kino Duomenys Autoriai - Augustas Baublys, Benediktas Gudžinskas
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

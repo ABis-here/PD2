@@ -36,76 +36,65 @@
 </header>
 
 <main class="container mt-4">
-    <div class="row">
+    <div class="row justify-content-center">
+        <section class="col-lg-10">
 
-        <!-- Kairys meniu -->
-        <aside class="col-md-3 mb-3">
-            <div class="list-group">
-                <a href="movies.html" class="list-group-item list-group-item-action active">Filmai</a>
-                <!-- Vėliau galėsi pridėti ir kitus punktus: Režisieriai, Aktoriai ir t.t. -->
+            <!-- Viršutinė žalia informacinė korta -->
+            <div class="card card-green mb-4 shadow">
+                <div class="card-body">
+                    <h2 class="card-title">Filmai</h2>
+                    <p class="card-text mb-0">
+                        Čia rasite visus pridėtus filmus, jų vidutinį įvertinimą ir komentarų kiekį.
+                        Spauskite ant filmo kortelės, kad peržiūrėtumėte visus paliktus atsiliepimus.
+                    </p>
+                </div>
             </div>
-        </aside>
 
-        <!-- Dešinė: filmų sąrašas ir įvertinimo forma -->
-        <section class="col-md-9">
-
-            <!-- Filmų sąrašas (kol kas statinis) -->
-            <h2 class="mb-3 text-light">Filmai</h2>
-
-            <!-- Tamsos riteris -->
+            <!-- Filmų sąrašas -->
             <a href="movie.html?id=1" class="text-decoration-none text-reset">
-                <div class="card mb-3">
+                <div class="card mb-3 card-red shadow">
                     <div class="card-body">
                         <h3 class="card-title">Tamsos riteris (2008)</h3>
-                        <p class="card-text">
-                            Betmeno kova su Džokeriu, kriminalinis/veiksmo filmas.
-                        </p>
+                        <p>Betmeno kova su Džokeriu, kriminalinis/veiksmo filmas.</p>
                         <p class="mb-1"><strong>Vidutinis įvertinimas:</strong> 9.1 / 10</p>
                         <p class="mb-0"><strong>Komentarų kiekis:</strong> 24</p>
                     </div>
                 </div>
             </a>
 
-            <!-- Žiedų valdovas -->
             <a href="movie.html?id=2" class="text-decoration-none text-reset">
-                <div class="card mb-4">
+                <div class="card mb-4 card-red shadow">
                     <div class="card-body">
                         <h3 class="card-title">Žiedų valdovas: Karaliaus sugrįžimas (2003)</h3>
-                        <p class="card-text">
-                            Epinis fantastinis nuotykis, paskutinė trilogijos dalis.
-                        </p>
+                        <p>Epinis fantastinis nuotykis, paskutinė trilogijos dalis.</p>
                         <p class="mb-1"><strong>Vidutinis įvertinimas:</strong> 9.3 / 10</p>
                         <p class="mb-0"><strong>Komentarų kiekis:</strong> 31</p>
                     </div>
                 </div>
             </a>
 
-            <!-- Vieta vartotojo įvertinimui ir komentarui -->
-            <div class="card bg-dark text-light">
+            <!-- Įvertinimo forma -->
+            <div class="card card-green shadow mb-5">
                 <div class="card-body">
                     <h3 class="card-title mb-3">Palikti įvertinimą ir komentarą</h3>
 
                     <form action="#" method="post">
-                        <!-- vėliau čia bus filmo pasirinkimas iš DB -->
                         <div class="mb-3">
-                            <label for="movieTitle" class="form-label">Filmo pavadinimas</label>
-                            <input type="text" id="movieTitle" name="movieTitle"
-                                   class="form-control" placeholder="Įrašykite filmo pavadinimą">
+                            <label class="form-label">Filmo pavadinimas</label>
+                            <input type="text" class="form-control" placeholder="Įrašykite filmo pavadinimą">
                         </div>
 
                         <div class="mb-3">
-                            <label for="rating" class="form-label">Įvertinimas (1–10)</label>
-                            <input type="number" id="rating" name="rating" class="form-control"
-                                   min="1" max="10" placeholder="Pvz.: 8">
+                            <label class="form-label">Įvertinimas (1–10)</label>
+                            <input type="number" class="form-control" min="1" max="10" placeholder="Pvz.: 8">
                         </div>
 
                         <div class="mb-3">
-                            <label for="comment" class="form-label">Komentaras</label>
-                            <textarea id="comment" name="comment" rows="4" class="form-control"
-                                      placeholder="Parašykite savo nuomonę apie filmą..."></textarea>
+                            <label class="form-label">Komentaras</label>
+                            <textarea class="form-control" rows="4" placeholder="Parašykite savo nuomonę..."></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-success">Siųsti</button>
+                        <button class="btn btn-light">Siųsti</button>
                     </form>
                 </div>
             </div>

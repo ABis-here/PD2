@@ -36,6 +36,7 @@ require_once 'config.php';
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="profile.php">Mano profilis</a></li>
                             <li><a class="dropdown-item" href="myreviews.php">Mano vertinimai</a></li>
+                            <li><a class="dropdown-item" href="watchlist.php">Mano žiūrėti vėliau sąrašas</a></li>
                             <?php if (isAdmin()): ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="admin/">Administravimas</a></li>

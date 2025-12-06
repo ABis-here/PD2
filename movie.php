@@ -99,42 +99,43 @@ $actors = $db->fetchAll("
                 
                 <div class="col-md-4">
                     <!-- Quick actions -->
-                    <div class="card bg-light text-dark">
-                        <div class="card-body">
-                            <h5 class="card-title">Veiksmai</h5>
-                            
-                            <?php if (isset($_SESSION['user_id'])): ?>
-                                <!-- Logged in - can review -->
-                                <button class="btn btn-success w-100 mb-2" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                                    Pateikti įvertinimą
-                                </button>
-                                
-                                <!-- Assignment requirement #7: Add to watchlist calculation -->
-                                <form method="POST" action="add_to_watchlist.php" class="mb-2">
-                                    <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        ✚ Į žiūrėsimų sąrašą
-                                    </button>
-                                </form>
-                            <?php else: ?>
-                                <!-- Not logged in -->
-                                <p class="text-center">
-                                    <small>Norite vertinti?</small><br>
-                                    <a href="login.php" class="btn btn-sm btn-success mt-1 w-100">Prisijungti</a>
-                                </p>
-                            <?php endif; ?>
-                            
-                            <!-- Share button -->
-                            <button class="btn btn-outline-dark w-100" onclick="shareMovie()">
-                                🔗 Pasidalinti
-                            </button>
-                            
-                            <!-- Assignment requirement #13: Print report -->
-                            <a href="print_movie.php?id=<?php echo $movie_id; ?>" class="btn btn-outline-dark w-100 mt-2" target="_blank">
-                                🖨️ Spausdinti ataskaitą
-                            </a>
-                        </div>
-                    </div>
+<div class="card bg-light text-dark">
+    <div class="card-body">
+        <h5 class="card-title">Veiksmai</h5>
+        
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <!-- Logged in - can review -->
+            <button class="btn btn-success w-100 mb-2" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                Pateikti įvertinimą
+            </button>
+            
+            <!-- Add to watchlist form -->
+            <form method="POST" action="add_to_watchlist.php" class="mb-2" id="watchlistForm">
+                <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
+                <button type="submit" class="btn btn-primary w-100" id="watchlistBtn">
+                    <?php
+                    // Check if already in watchlist
+                    $inWatchlist = $db->fetchOne("SELECT id FROM watchlist WHERE movie_id = ? AND user_id = ?", 
+                                               [$movie_id, $_SESSION['user_id']]);
+                    echo $inWatchlist ? '✅ Jau sąraše' : '✚ Žiūrėti vėliau';
+                    ?>
+                </button>
+            </form>
+        <?php else: ?>
+            <!-- Not logged in -->
+            <p class="text-center">
+                <small>Norite pridėti į sąrašą?</small><br>
+                <a href="login.php" class="btn btn-sm btn-success mt-1 w-100">Prisijungti</a>
+            </p>
+        <?php endif; ?>
+        
+        <!-- Share button -->
+        <button class="btn btn-outline-dark w-100" onclick="shareMovie()">
+            🔗 Pasidalinti
+        </button>
+        
+    </div>
+</div>
                 </div>
             </div>
         </div>
@@ -188,20 +189,24 @@ $actors = $db->fetchAll("
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Žiūrėsių</h5>
-                    <p class="display-6">
-                        <?php
-                        // Assignment requirement #7: Calculate watchlist count
-                        $watchlistCount = $db->fetchOne("SELECT COUNT(*) as count FROM watchlist WHERE movie_id = ?", [$movie_id])['count'];
-                        echo $watchlistCount;
-                        ?>
-                    </p>
-                </div>
-            </div>
+        <!-- Update this section in movie.php (around line 198) -->
+<div class="col-md-3">
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">Žiūrėsiu</h5>
+            <p class="display-6">
+                <?php
+                try {
+                    $watchlistCount = $db->fetchOne("SELECT COUNT(*) as count FROM watchlist WHERE movie_id = ?", [$movie_id])['count'];
+                    echo $watchlistCount;
+                } catch (Exception $e) {
+                    echo '0'; // Show 0 if table doesn't exist
+                }
+                ?>
+            </p>
         </div>
+    </div>
+</div>
         <div class="col-md-3">
             <div class="card text-center">
                 <div class="card-body">
@@ -368,6 +373,61 @@ window.addEventListener('load', function() {
         console.log('Sveikas sugrįžęs, ' + decodeURIComponent(username) + '!');
     }
 });
+
+// AJAX for watchlist
+document.getElementById('watchlistForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const button = document.getElementById('watchlistBtn');
+    
+    fetch('add_to_watchlist.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update button text
+            button.innerHTML = data.in_watchlist ? '✅ Jau sąraše' : '✚ Žiūrėti vėliau';
+            button.className = data.in_watchlist ? 'btn btn-success w-100' : 'btn btn-primary w-100';
+            
+            // Show notification
+            showNotification(data.message, data.success ? 'success' : 'info');
+            
+            // Update watchlist count
+            if (document.getElementById('watchlistCount')) {
+                document.getElementById('watchlistCount').textContent = data.watchlist_count;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Įvyko klaida!', 'error');
+    });
+});
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.style.minWidth = '300px';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
 </script>
 
 <?php

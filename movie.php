@@ -109,18 +109,18 @@ $actors = $db->fetchAll("
                 Pateikti įvertinimą
             </button>
             
-            <!-- Add to watchlist form -->
-            <form method="POST" action="add_to_watchlist.php" class="mb-2" id="watchlistForm">
-                <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
-                <button type="submit" class="btn btn-primary w-100" id="watchlistBtn">
-                    <?php
-                    // Check if already in watchlist
-                    $inWatchlist = $db->fetchOne("SELECT id FROM watchlist WHERE movie_id = ? AND user_id = ?", 
-                                               [$movie_id, $_SESSION['user_id']]);
-                    echo $inWatchlist ? '✅ Jau sąraše' : '✚ Žiūrėti vėliau';
-                    ?>
-                </button>
-            </form>
+<!-- Add to watchlist form - prevent default and use AJAX -->
+<form method="POST" action="add_to_watchlist.php" class="mb-2 watchlist-form" 
+      id="watchlistForm" onsubmit="return handleWatchlistSubmit(event)">
+    <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
+    <button type="submit" class="btn btn-primary w-100" id="watchlistBtn">
+        <?php
+        $inWatchlist = $db->fetchOne("SELECT id FROM watchlist WHERE movie_id = ? AND user_id = ?", 
+                                   [$movie_id, $_SESSION['user_id']]);
+        echo $inWatchlist ? '✅ Jau sąraše' : '✚ Žiūrėti vėliau';
+        ?>
+    </button>
+</form>
         <?php else: ?>
             <!-- Not logged in -->
             <p class="text-center">
@@ -128,12 +128,6 @@ $actors = $db->fetchAll("
                 <a href="login.php" class="btn btn-sm btn-success mt-1 w-100">Prisijungti</a>
             </p>
         <?php endif; ?>
-        
-        <!-- Share button -->
-        <button class="btn btn-outline-dark w-100" onclick="shareMovie()">
-            🔗 Pasidalinti
-        </button>
-        
     </div>
 </div>
                 </div>
@@ -166,103 +160,112 @@ $actors = $db->fetchAll("
     </div>
     <?php endif; ?>
 
-    <!-- Section: Comments -->
-    <h3 class="text-light mb-3">Vartotojų įvertinimai ir komentarai</h3>
+<!-- Section: Comments -->
+<h3 class="text-light mb-3">Vartotojų įvertinimai ir komentarai</h3>
 
-    <!-- Reviews statistics -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Vidutinis</h5>
-                    <p class="display-6">
-                        <?php echo $movie['avg_rating'] ? number_format($movie['avg_rating'], 1) : '0.0'; ?>
-                    </p>
-                </div>
+<!-- Reviews statistics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Vidutinis</h5>
+                <p class="display-6">
+                    <?php echo $movie['avg_rating'] ? number_format($movie['avg_rating'], 1) : '0.0'; ?>
+                </p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Įvertinimų</h5>
-                    <p class="display-6"><?php echo $movie['review_count']; ?></p>
-                </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Įvertinimų</h5>
+                <p class="display-6"><?php echo $movie['review_count']; ?></p>
             </div>
         </div>
-        <!-- Update this section in movie.php (around line 198) -->
-<div class="col-md-3">
-    <div class="card text-center">
-        <div class="card-body">
-            <h5 class="card-title">Žiūrėsiu</h5>
-            <p class="display-6">
-                <?php
-                try {
-                    $watchlistCount = $db->fetchOne("SELECT COUNT(*) as count FROM watchlist WHERE movie_id = ?", [$movie_id])['count'];
-                    echo $watchlistCount;
-                } catch (Exception $e) {
-                    echo '0'; // Show 0 if table doesn't exist
-                }
-                ?>
-            </p>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Žiūrėsiu</h5>
+                <p class="display-6">
+                    <?php
+                    try {
+                        $watchlistCount = $db->fetchOne("SELECT COUNT(*) as count FROM watchlist WHERE movie_id = ?", [$movie_id])['count'];
+                        echo $watchlistCount;
+                    } catch (Exception $e) {
+                        echo '0';
+                    }
+                    ?>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Metai</h5>
+                <p class="display-6"><?php echo $movie['release_year']; ?></p>
+            </div>
         </div>
     </div>
 </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Metai</h5>
-                    <p class="display-6"><?php echo $movie['release_year']; ?></p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- COMMENTS – RED cards -->
-    <?php if (empty($reviews)): ?>
-        <div class="alert alert-info">
-            Kol kas nėra įvertinimų. Būkite pirmas!
-        </div>
-    <?php else: ?>
-        <?php foreach ($reviews as $review): ?>
-            <div class="card mb-3 card-red">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <p class="mb-1">
-                                <strong>Vartotojas:</strong> 
-                                <span class="badge bg-light text-dark">
-                                    <?php echo htmlspecialchars($review['username']); ?>
-                                </span>
-                            </p>
-                            <p class="mb-1 text-muted">
-                                <small>
-                                    <?php echo date('Y-m-d H:i', strtotime($review['created_at'])); ?>
-                                </small>
-                            </p>
-                        </div>
-                        <div>
-                            <span class="badge bg-warning text-dark fs-6">
-                                <?php echo $review['rating']; ?> / 10
+<!-- COMMENTS – RED cards -->
+<?php if (empty($reviews)): ?>
+    <div class="alert alert-info">
+        Kol kas nėra įvertinimų. Būkite pirmas!
+        <?php echo "<!-- No reviews found in database for movie $movie_id -->"; ?>
+    </div>
+<?php else: ?>
+    <?php foreach ($reviews as $index => $review): ?>
+        <div class="card mb-3 card-red">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <p class="mb-1">
+                            <strong>Vartotojas:</strong> 
+                            <span class="badge bg-light text-dark">
+                                <?php echo htmlspecialchars($review['username']); ?>
                             </span>
-                        </div>
+                        </p>
+                        <p class="mb-1 text-muted">
+                            <small>
+                                <?php echo date('Y-m-d H:i', strtotime($review['created_at'])); ?>
+                            </small>
+                        </p>
                     </div>
-                    <p class="mb-0"><?php echo nl2br(htmlspecialchars($review['comment'])); ?></p>
-                    
-                    <!-- Like button (optional feature) -->
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-light" 
-                                    onclick="likeReview(<?php echo $review['id']; ?>)">
-                                👍 Patinka (<?php 
-                                $likeCount = $db->fetchOne("SELECT COUNT(*) as count FROM review_likes WHERE review_id = ?", [$review['id']])['count'];
-                                echo $likeCount; 
-                                ?>)
-                            </button>
-                        </div>
-                    <?php endif; ?>
+                    <div>
+                        <span class="badge bg-warning text-dark fs-6">
+                            <?php echo $review['rating']; ?> / 10
+                        </span>
+                    </div>
                 </div>
+                
+                <!-- DEBUG: Show raw comment data -->
+                <?php 
+                // Debug the comment
+                $comment_debug = isset($review['comment']) ? $review['comment'] : 'NULL';
+                echo "<!-- DEBUG Review $index: comment = " . htmlspecialchars($comment_debug) . " -->";
+                ?>
+                
+                <!-- Comment display with better handling -->
+                <?php if (isset($review['comment']) && !empty(trim($review['comment']))): ?>
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <p class="mb-0 text-dark">
+                            <?php echo nl2br(htmlspecialchars($review['comment'])); ?>
+                        </p>
+                    </div>
+                <?php else: ?>
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <p class="mb-0 text-muted">
+                            <em>Šis įvertinimas neturi komentaro.</em>
+                        </p>
+                    </div>
+                <?php endif; ?>
             </div>
-        <?php endforeach; ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
         
         <!-- Pagination if many reviews -->
         <?php
@@ -288,7 +291,6 @@ $actors = $db->fetchAll("
                 </ul>
             </nav>
         <?php endif; ?>
-    <?php endif; ?>
 
     <!-- Add review form (Modal) -->
     <?php if (isset($_SESSION['user_id'])): ?>
@@ -327,109 +329,6 @@ $actors = $db->fetchAll("
     <?php endif; ?>
 
 </main>
-
-<!-- JavaScript for interactivity -->
-<script>
-function shareMovie() {
-    if (navigator.share) {
-        navigator.share({
-            title: '<?php echo addslashes($movie["title"]); ?>',
-            text: 'Peržiūrėk šį filmą Kino Duomenys sistemoje!',
-            url: window.location.href
-        });
-    } else {
-        // Fallback: copy to clipboard
-        navigator.clipboard.writeText(window.location.href);
-        alert('Nuoroda nukopijuota į iškarpinę!');
-    }
-}
-
-function likeReview(reviewId) {
-    // AJAX call to like a review (Assignment requirement #15)
-    fetch('like_review.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'review_id=' + reviewId
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update like count
-            const likeBtn = event.target;
-            likeBtn.textContent = `👍 Patinka (${data.likeCount})`;
-        }
-    });
-}
-
-// Assignment requirement #10: Check for cookie
-window.addEventListener('load', function() {
-    const cookies = document.cookie.split(';');
-    const userCookie = cookies.find(cookie => cookie.trim().startsWith('user_login='));
-    
-    if (userCookie) {
-        const username = userCookie.split('=')[1];
-        console.log('Sveikas sugrįžęs, ' + decodeURIComponent(username) + '!');
-    }
-});
-
-// AJAX for watchlist
-document.getElementById('watchlistForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const button = document.getElementById('watchlistBtn');
-    
-    fetch('add_to_watchlist.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update button text
-            button.innerHTML = data.in_watchlist ? '✅ Jau sąraše' : '✚ Žiūrėti vėliau';
-            button.className = data.in_watchlist ? 'btn btn-success w-100' : 'btn btn-primary w-100';
-            
-            // Show notification
-            showNotification(data.message, data.success ? 'success' : 'info');
-            
-            // Update watchlist count
-            if (document.getElementById('watchlistCount')) {
-                document.getElementById('watchlistCount').textContent = data.watchlist_count;
-            }
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotification('Įvyko klaida!', 'error');
-    });
-});
-
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    notification.style.top = '20px';
-    notification.style.right = '20px';
-    notification.style.zIndex = '9999';
-    notification.style.minWidth = '300px';
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
-
-</script>
-
 <?php
 // Close database connection
 $db->close();

@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
     
     $movie_id = intval($_POST['movie_id']);
     $rating = intval($_POST['rating']);
-    $comment = trim($db->escape($_POST['comment']));
+    $comment = trim($_POST['comment']);
     
     // Check if user already reviewed this movie
     $existing = $db->fetchOne("SELECT id FROM reviews WHERE movie_id = ? AND user_id = ?", 

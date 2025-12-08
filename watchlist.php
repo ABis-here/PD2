@@ -50,7 +50,7 @@ include 'includes/header.php';
     <?php if (empty($watchlist)): ?>
         <div class="card">
             <div class="card-body text-center">
-                <h5 class="card-title">Jūsų žiūrėsimų sąrašas tuščias</h5>
+                <h5 class="card-title">Jūsų žiūrėsiu vėliau sąrašas tuščias</h5>
                 <p class="card-text">Pridėkite filmų, kuriuos planuojate žiūrėti!</p>
                 <a href="movies.php" class="btn btn-primary">Peržiūrėti filmus</a>
             </div>

@@ -95,6 +95,13 @@ public function executeJSON($sql, $params = []) {
     }
     return ['success' => true, 'stmt' => $stmt];
 }
+public function escape($string) {
+    return $this->conn->real_escape_string($string);
+}
+
+public function getLastError() {
+    return $this->conn->error;
+}
 }
 
 ?>

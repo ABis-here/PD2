@@ -1,6 +1,3 @@
--- Complete Database Schema for Kino Duomenys
--- Save this as database/schema.sql
-
 DROP DATABASE IF EXISTS kino_duomenys;
 CREATE DATABASE kino_duomenys;
 USE kino_duomenys;
@@ -87,7 +84,7 @@ CREATE TABLE files (
     FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- ========== INSERT SAMPLE DATA ==========
+
 
 -- Sample movies
 INSERT INTO movies (title, release_year, director, genre, description) VALUES
@@ -100,9 +97,7 @@ INSERT INTO movies (title, release_year, director, genre, description) VALUES
 -- Test user (password: test123)
 -- Password hash for 'test123' using bcrypt
 INSERT INTO users (username, email, password_hash, is_admin) VALUES
-('testas', 'test@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', TRUE),
-('jonas', 'jonas@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', FALSE),
-('marta', 'marta@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', FALSE);
+('testas', 'test@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', TRUE);
 
 -- Sample actors
 INSERT INTO actors (name, birth_year) VALUES

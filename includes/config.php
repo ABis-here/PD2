@@ -3,8 +3,8 @@ session_start();
 
 // Database configuration
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');  // Default XAMPP username
-define('DB_PASS', '');      // Default XAMPP password is empty
+define('DB_USER', 'root');  
+define('DB_PASS', '');      
 define('DB_NAME', 'kino_duomenys');
 
 // Error reporting
@@ -45,4 +45,5 @@ function isLoggedIn() {
 function isAdmin() {
     return isset($_SESSION['is_admin']) && $_SESSION['is_admin'];
 }
+
 ?>

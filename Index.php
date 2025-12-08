@@ -30,7 +30,7 @@ $db = new Database();
                         <?php endif; ?>
                     </p>
                     <a href="movies.php" class="btn btn-light btn-lg">
-                        🎬 Peržiūrėti filmų sąrašą
+                        Peržiūrėti filmų sąrašą
                     </a>
                     
                     <!-- Add dynamic statistics -->

@@ -60,7 +60,7 @@ $genres = $db->fetchAll("SELECT DISTINCT genre FROM movies WHERE genre IS NOT NU
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
     $movie_id = intval($_POST['movie_id']);
     $rating = intval($_POST['rating']);
-    $comment = trim($db->escape($_POST['comment']));
+    $comment = trim($_POST['comment']);
     
     // Validate rating
     if ($rating >= 1 && $rating <= 10) {
@@ -140,7 +140,7 @@ include 'includes/header.php';
             <!-- FILTERS SECTION -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <h4 class="card-title mb-3">🔍 Filtrai ir paieška</h4>
+                    <h4 class="card-title mb-3">Filtrai ir paieška</h4>
                     
                     <form method="GET" action="movies.php" class="row g-3">
                         <div class="col-md-6">
@@ -179,11 +179,6 @@ include 'includes/header.php';
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">Filtruoti</button>
                             <a href="movies.php" class="btn btn-outline-secondary">Išvalyti filtrus</a>
-                            
-                            <!-- Assignment requirement #6: Complex search link -->
-                            <a href="advanced_search.php" class="btn btn-outline-info float-end">
-                                🔍 Sudėtinga paieška
-                            </a>
                         </div>
                     </form>
                 </div>
@@ -408,58 +403,6 @@ include 'includes/header.php';
         </section>
     </div>
 </main>
-
-<!-- JavaScript for interactivity -->
-<script>
-// Assignment requirement #15: AJAX preview
-function previewReview() {
-    const form = document.getElementById('reviewForm');
-    const formData = new FormData(form);
-    
-    fetch('preview_review.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        document.getElementById('previewContent').innerHTML = data;
-        document.getElementById('reviewPreview').classList.remove('d-none');
-    });
-}
-
-// Assignment requirement #10: Check for cookie
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if user_login cookie exists
-    const cookies = document.cookie.split(';');
-    const userCookie = cookies.find(cookie => cookie.trim().startsWith('user_login='));
-    
-    if (userCookie && !<?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>) {
-        // Auto-fill username from cookie if not logged in
-        const username = decodeURIComponent(userCookie.split('=')[1]);
-        console.log('Automatinis prisijungimas galimas: ' + username);
-    }
-    
-    // Add hover effect to movie cards
-    const movieCards = document.querySelectorAll('.hover-lift');
-    movieCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-            this.style.transition = 'transform 0.3s ease';
-        });
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-});
-
-// Assignment requirement #8: Include functionality demonstration
-// This would be used in other pages to include common elements
-function loadHeader() {
-    // Example of PHP include functionality
-    console.log('PHP include() funkcija naudojama header.php ir footer.php failuose');
-}
-</script>
-
 <?php
 // Close database connection
 $db->close();

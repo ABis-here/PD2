@@ -98,7 +98,7 @@ $db = new Database();
                         <!-- If logged in -->
                         <div class="mt-3 pt-3 border-top border-light">
                             <p class="mb-2"><small>Sveikas, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>!</small></p>
-                            <a href="submit_review.php" class="btn btn-sm btn-light w-100">
+                            <a href="movies.php" class="btn btn-sm btn-light w-100">
                                 Pridėti įvertinimą
                             </a>
                         </div>

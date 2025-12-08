@@ -1,0 +1,52 @@
+Html, body  {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+
+Body {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(
+        to bottom, 
+        #c62828 0%,
+        #b91d1d 20%,
+        #8d3d1f 40%,
+        #2e7d32 60%,
+        #19951f 70%,
+        #037407 80%,
+        #015304 100%
+    );
+    font-family: Arial, sans-serif;
+}
+
+Main {
+
+    flex: 1;
+}
+
+footer {
+    background-color: #b71c1c;
+    color: white;
+    text-align: center;
+}
+
+header{
+    background-color: #c62828;
+    color: white;
+}
+h1 {
+    font-family: 'Snowburst One', cursive;
+    color: #ffffff;
+    text-shadow: 0px 0px 10px #71d6ff, 0px 0px 20px #71d6ff;
+}
+.card-green {
+    background-color: #1b5e20 !important; /* tamsiai žalia */
+    color: white !important;
+}
+
+.card-red {
+    background-color: #b71c1c !important; /* tamsiai raudona */
+    color: white !important;
+}

@@ -8,7 +8,6 @@ require_once 'config.php';
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo isset($pageTitle) ? $pageTitle . ' – Kino Duomenys' : 'Kino Duomenys'; ?></title>
     
-    <!-- Meta tags for SEO -->
     <meta name="description" content="Kino filmų duomenų bazė su įvertinimais ir komentarais">
     <meta name="keywords" content="kino filmai, įvertinimai, komentarai, Lietuva">
     <meta name="author" content="Augustas Baublys, Benediktas Gudžinskas">

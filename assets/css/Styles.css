@@ -1,23 +1,14 @@
 Html, body  {
     margin: 0;
     padding: 0;
-    height: 100%;
 }
 
 
 Body {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(
-        to bottom, 
-        #c62828 0%,
-        #b91d1d 20%,
-        #8d3d1f 40%,
-        #2e7d32 60%,
-        #19951f 70%,
-        #037407 80%,
-        #015304 100%
-    );
+    background: linear-gradient(to bottom, #c62828 0%, #015304 60%);
     font-family: Arial, sans-serif;
 }
 

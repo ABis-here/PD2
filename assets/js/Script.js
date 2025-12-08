@@ -114,7 +114,7 @@ function setupWatchlistAJAX() {
             .then(data => {
                 if (data.success) {
                     // Update button
-                    button.innerHTML = data.in_watchlist ? '✅ Jau sąraše' : '✚ Žiūrėti vėliau';
+                    button.innerHTML = data.in_watchlist ? ' Jau sąraše' : ' Žiūrėti vėliau';
                     button.className = data.in_watchlist ? 
                         'btn btn-success w-100' : 'btn btn-primary w-100';
                     

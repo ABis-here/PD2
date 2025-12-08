@@ -151,19 +151,18 @@ $db = new Database();
                     </p>
                     
                     <ul class="list-unstyled">
-                        <li class="mb-2">✓ Filmų katalogas</li>
-                        <li class="mb-2">✓ Įvertinimų sistema</li>
-                        <li class="mb-2">✓ Vartotojų komentarai</li>
-                        <li class="mb-2">✓ Paieška ir filtravimas</li>
-                        <li>✓ Ataskaitų generavimas</li>
+                        <li class="mb-2"> Filmų katalogas</li>
+                        <li class="mb-2"> Įvertinimų sistema</li>
+                        <li class="mb-2"> Vartotojų komentarai</li>
+                        <li class="mb-2"> Paieška ir filtravimas</li>
+                        <li class="mb-2"> Vartotojų registracija ir prisijungimas</li>
                     </ul>
                     
                     <div class="mt-3 pt-3 border-top border-light">
                         <p class="mb-2"><small>Plėtimo planai:</small></p>
                         <ul class="list-unstyled">
-                            <li><small>• Asmeniniai sąrašai</small></li>
-                            <li><small>• Rekomendacijos</small></li>
-                            <li><small>• Forumas</small></li>
+                            <li><small> ⁎ Komentarų įvertinimo funkcija</small></li>
+                            <li><small> ⁎ Komentarų pasidalinimo bei atsakymų į komentarus funkcija</small></li>
                         </ul>
                     </div>
                 </div>

@@ -117,7 +117,7 @@ $actors = $db->fetchAll("
         <?php
         $inWatchlist = $db->fetchOne("SELECT id FROM watchlist WHERE movie_id = ? AND user_id = ?", 
                                    [$movie_id, $_SESSION['user_id']]);
-        echo $inWatchlist ? '✅ Jau sąraše' : '✚ Žiūrėti vėliau';
+        echo $inWatchlist ? ' Jau sąraše' : ' Žiūrėti vėliau';
         ?>
     </button>
 </form>
@@ -139,7 +139,7 @@ $actors = $db->fetchAll("
     <?php if (!empty($actors)): ?>
     <div class="card mb-4">
         <div class="card-body">
-            <h4 class="card-title mb-3">🎭 Aktoriai</h4>
+            <h4 class="card-title mb-3"> Aktoriai</h4>
             <div class="row">
                 <?php foreach ($actors as $actor): ?>
                     <div class="col-md-3 col-sm-6 mb-3">
@@ -248,7 +248,6 @@ $actors = $db->fetchAll("
                 echo "<!-- DEBUG Review $index: comment = " . htmlspecialchars($comment_debug) . " -->";
                 ?>
                 
-                <!-- Comment display with better handling -->
                 <?php if (isset($review['comment']) && !empty(trim($review['comment']))): ?>
                     <div class="mt-3 p-3 bg-light rounded">
                         <p class="mb-0 text-dark">

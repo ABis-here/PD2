@@ -72,7 +72,6 @@ include 'includes/header.php';
                                     <a href="watchlist.php?remove=<?php echo $movie['id']; ?>" 
                                        class="btn btn-sm btn-danger"
                                        onclick="return confirm('Ar tikrai norite pašalinti šį filmą iš sąrašo?')">
-                                        ❌
                                     </a>
                                 </div>
                             </div>

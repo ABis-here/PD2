@@ -1,11 +1,11 @@
 Html, body  {
     margin: 0;
     padding: 0;
-    height: 100%;
 }
 
 
 Body {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     background: linear-gradient(

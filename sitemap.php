@@ -6,7 +6,7 @@ include 'includes/header.php';
 <main class="container mt-4">
     <div class="card card-green mb-4">
         <div class="card-body">
-            <h2 class="card-title">🗺️ Vizualus svetainės žemėlapis</h2>
+            <h2 class="card-title"> Vizualus svetainės žemėlapis</h2>
             <p class="card-text">
                 Žemiau matote svetainės struktūrą ir puslapių tarpusavio ryšius.
             </p>
@@ -17,14 +17,12 @@ include 'includes/header.php';
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h4 class="card-title">📊 Svetainės struktūros schema</h4>
+                    <h4 class="card-title"> Svetainės struktūros schema</h4>
                     
-                    <!-- Beautiful Image Container -->
                     <div class="text-center my-4">
                         <!-- Image Frame with Shadow and Border -->
                         <div class="image-frame rounded-3 shadow-lg p-3 mb-4" style="background: linear-gradient(145deg, #f8f9fa, #e9ecef);">
-                            <!-- Replace "YOUR_IMAGE_PATH" with your actual image path -->
-                            <img src="C:\xampp\htdocs\PD2\includes\sitemap.png" 
+                            <img src="includes/sitemap.png?v=1.0" 
                                  alt="Kino Duomenys svetainės struktūros schema" 
                                  class="img-fluid rounded-2 shadow-sm"
                                  style="max-height: 500px; width: auto; border: 1px solid #dee2e6;">
@@ -38,7 +36,7 @@ include 'includes/header.php';
                             </p>
                         </div>
                         
-                        <!-- Image Controls (Optional) -->
+                        <!-- Image Controls -->
                         <div class="image-controls btn-group" role="group">
                             <button type="button" class="btn btn-outline-primary btn-sm" onclick="zoomIn()">
                                 <i class="bi bi-zoom-in"></i> Padidinti
@@ -49,7 +47,7 @@ include 'includes/header.php';
                             <button type="button" class="btn btn-outline-primary btn-sm" onclick="resetZoom()">
                                 <i class="bi bi-arrow-counterclockwise"></i> Atstatyti
                             </button>
-                            <a href="PATH_TO_YOUR_IMAGE" download class="btn btn-outline-success btn-sm">
+                            <a href="includes/sitemap.png?v=1.0" download class="btn btn-outline-success btn-sm">
                                 <i class="bi bi-download"></i> Atsisiųsti
                             </a>
                         </div>
@@ -58,7 +56,7 @@ include 'includes/header.php';
                     <!-- Image Description -->
                     <div class="card bg-light mt-4">
                         <div class="card-body">
-                            <h5 class="card-title">📝 Diagramos paaiškinimai</h5>
+                            <h5 class="card-title"> Diagramos paaiškinimai</h5>
                             <div class="row">
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
@@ -104,7 +102,7 @@ include 'includes/header.php';
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h4 class="card-title">🎨 Spalvų reikšmės</h4>
+                    <h4 class="card-title"> Spalvų reikšmės</h4>
                     <ul class="list-unstyled">
                         <li class="mb-2"><span class="badge bg-success me-2">🟢</span> Viešas prieinamumas</li>
                         <li class="mb-2"><span class="badge bg-primary me-2">🔵</span> Reikalauja prisijungimo</li>
@@ -127,7 +125,7 @@ include 'includes/header.php';
                         <a href="movies.php" class="btn btn-primary">
                             <i class="bi bi-film"></i> Visi filmai
                         </a>
-                        <a href="sitemap.php" class="btn btn-info">
+                        <a href="includes/sitemap.png?v=1.0" class="btn btn-info">
                             <i class="bi bi-diagram-3"></i> Tekstinis žemėlapis
                         </a>
                     </div>
@@ -177,7 +175,6 @@ function updateImageZoom() {
     }
 }
 
-// Add Bootstrap Icons if not already included
 if (!document.querySelector('link[href*="bootstrap-icons"]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -186,7 +183,6 @@ if (!document.querySelector('link[href*="bootstrap-icons"]')) {
 }
 </script>
 
-<!-- Add some custom CSS for the image frame -->
 <style>
 .image-frame {
     position: relative;

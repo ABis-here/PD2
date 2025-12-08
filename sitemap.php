@@ -52,6 +52,70 @@ include 'includes/header.php';
                             </a>
                         </div>
                     </div>
+<<<<<<< HEAD
+=======
+                    
+                    <!-- Image Description -->
+                    <div class="card bg-light mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title"> Diagramos paaiškinimai</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <span class="badge bg-success me-2">●</span>
+                                            <strong>Žalios kortelės:</strong> Informacinės sekcijos
+                                        </li>
+                                        <li class="mb-2">
+                                            <span class="badge bg-danger me-2">●</span>
+                                            <strong>Raudonos kortelės:</strong> Vartotojų interakcijos
+                                        </li>
+                                        <li class="mb-2">
+                                            <span class="badge bg-primary me-2">●</span>
+                                            <strong>Mėlynos nuorodos:</strong> Navigacijos keliai
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <span class="badge bg-warning me-2">●</span>
+                                            <strong>Geltoni langai:</strong> Dinaminis turinys
+                                        </li>
+                                        <li class="mb-2">
+                                            <span class="badge bg-info me-2">●</span>
+                                            <strong>Žydri elementai:</strong> Duomenų srautai
+                                        </li>
+                                        <li class="mb-2">
+                                            <span class="badge bg-secondary me-2">●</span>
+                                            <strong>Pilki blokai:</strong> Techninė infrastruktūra
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title"> Spalvų reikšmės</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><span class="badge bg-success me-2">🟢</span> Viešas prieinamumas</li>
+                        <li class="mb-2"><span class="badge bg-primary me-2">🔵</span> Reikalauja prisijungimo</li>
+                        <li class="mb-2"><span class="badge bg-info me-2">🟡</span> Dinaminis puslapis</li>
+                        <li class="mb-2"><span class="badge bg-danger me-2">🔴</span> Paslaugos / AJAX</li>
+                        <li class="mb-2"><span class="badge bg-warning me-2">🟠</span> Administravimas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+>>>>>>> ecdd22f941a89c10e75cd4fd8822ad5961d9127f
         
         <div class="col-md-6">
             <div class="card mb-4">
@@ -65,7 +129,11 @@ include 'includes/header.php';
                             <i class="bi bi-film"></i> Visi filmai
                         </a>
                         <a href="includes/sitemap.png?v=1.0" class="btn btn-info">
+<<<<<<< HEAD
                             <i class="bi bi-diagram-3"></i> Žemėlapis
+=======
+                            <i class="bi bi-diagram-3"></i> Tekstinis žemėlapis
+>>>>>>> ecdd22f941a89c10e75cd4fd8822ad5961d9127f
                         </a>
                     </div>
                 </div>

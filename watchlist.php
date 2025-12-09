@@ -70,8 +70,11 @@ include 'includes/header.php';
                                 </div>
                                 <div>
                                     <a href="watchlist.php?remove=<?php echo $movie['id']; ?>" 
-                                       class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Ar tikrai norite pašalinti šį filmą iš sąrašo?')">
+                                       class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
+                                       onclick="return confirm('Ar tikrai norite pašalinti šį filmą iš sąrašo?')"
+                                       style="width: 32px; height: 32px; padding: 0;"
+                                       title="Pašalinti iš sąrašo">
+                                        <i class="bi bi-x-lg"></i>
                                     </a>
                                 </div>
                             </div>

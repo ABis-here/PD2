@@ -1,324 +1,261 @@
-document.addEventListener('DOMContentLoaded', function() {
- 
+// JavaScript Document
+document.addEventListener('DOMContentLoaded', function () {
+
+    //  Login Cookie Detection
+    //  Checks if a saved login cookie exists and shows a suggestion box
     function checkCookie() {
-        // Check if user_login cookie exists
         const cookies = document.cookie.split(';');
-        const userCookie = cookies.find(cookie => cookie.trim().startsWith('user_login='));
-        
+        const userCookie = cookies.find(c => c.trim().startsWith('user_login='));
+
         if (userCookie) {
             const username = decodeURIComponent(userCookie.split('=')[1]);
-            console.log('Cookie found for user: ' + username);
-            
-            // If not logged in, suggest auto-login
+
             if (!document.body.classList.contains('logged-in')) {
-                console.log('Automatinis prisijungimas galimas: ' + username);
-                
-                // Optional: Show login suggestion
                 showCookieNotification(username);
             }
         }
     }
-    
+
     function showCookieNotification(username) {
-        // Create notification if not exists
-        if (!document.getElementById('cookie-login-notification')) {
-            const notification = document.createElement('div');
-            notification.id = 'cookie-login-notification';
-            notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
-            notification.style.top = '20px';
-            notification.style.right = '20px';
-            notification.style.zIndex = '9999';
-            notification.style.minWidth = '300px';
-            notification.innerHTML = `
-                <strong>Sveikas sugrįžęs, ${username}!</strong><br>
-                Turime įrašytą prisijungimą. Ar norite prisijungti automatiškai?
-                <div class="mt-2">
-                    <a href="login.php?autofill=${encodeURIComponent(username)}" class="btn btn-sm btn-success">Taip</a>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="this.parentElement.parentElement.remove()">Ne</button>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto remove after 10 seconds
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 10000);
-        }
+        if (document.getElementById('cookie-login-notification')) return;
+
+        const notif = document.createElement('div');
+        notif.id = 'cookie-login-notification';
+        notif.className = 'alert alert-info alert-dismissible fade show position-fixed';
+        notif.style.top = '20px';
+        notif.style.right = '20px';
+        notif.style.zIndex = '9999';
+
+        notif.innerHTML = `
+            <strong>Welcome back, ${username}!</strong><br>
+            We found a saved login session. Would you like to sign in automatically?
+            <div class="mt-2">
+                <a href="login.php?autofill=${encodeURIComponent(username)}" class="btn btn-sm btn-success">Yes</a>
+                <button class="btn btn-sm btn-outline-secondary" onclick="this.closest('.alert').remove()">No</button>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        document.body.appendChild(notif);
+
+        setTimeout(() => notif.remove(), 10000);
     }
-    
-    // AJAX preview for reviews
-    window.previewReview = function() {
+
+    //  Review Preview via AJAX
+    //  Sends review form data to the server and displays a live preview
+    window.previewReview = function () {
         const form = document.getElementById('reviewForm');
         if (!form) return;
-        
+
         const formData = new FormData(form);
         const previewBtn = form.querySelector('button[onclick*="previewReview"]');
-        
+
         if (previewBtn) {
             previewBtn.disabled = true;
-            previewBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Kraunama...';
+            previewBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
         }
-        
-        fetch('preview_review.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('previewContent').innerHTML = data;
-            document.getElementById('reviewPreview').classList.remove('d-none');
-        })
-        .catch(error => {
-            console.error('AJAX error:', error);
-            alert('Klaida įkėlus peržiūrą. Bandykite dar kartą.');
-        })
-        .finally(() => {
-            if (previewBtn) {
-                previewBtn.disabled = false;
-                previewBtn.innerHTML = 'Peržiūrėti';
-            }
-        });
-    };
-    
-function setupWatchlistAJAX() {
-    // Handle all watchlist forms
-    const watchlistForms = document.querySelectorAll('.watchlist-form, form[action*="add_to_watchlist"]');
-    
-    watchlistForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const formData = new FormData(this);
-            const button = this.querySelector('button[type="submit"]');
-            const originalText = button.innerHTML;
-            
-            // Show loading
-            button.disabled = true;
-            button.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-            
-            fetch(this.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Update button
-                    button.innerHTML = data.in_watchlist ? ' Jau sąraše' : ' Žiūrėti vėliau';
-                    button.className = data.in_watchlist ? 
-                        'btn btn-success w-100' : 'btn btn-primary w-100';
-                    
-                    // Show notification
-                    showNotification(data.message, 'success');
-                    
-                    console.log('Watchlist update successful:', data);
-                } else {
-                    showNotification(data.message || 'Klaida!', 'error');
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                    
-                    if (data.redirect) {
-                        setTimeout(() => {
-                            window.location.href = data.redirect;
-                        }, 1500);
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('Įvyko klaida!', 'error');
-                button.innerHTML = originalText;
-                button.disabled = false;
-            });
-            
-            return false;
-        });
-    });
-}
 
-    // UI Enhancement Functions
-    
-    // Add hover effect to movie cards
-    function setupMovieCardHover() {
-        const movieCards = document.querySelectorAll('.hover-lift');
-        movieCards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-5px)';
-                this.style.transition = 'transform 0.3s ease';
-                this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
+        fetch('preview_review.php', { method: 'POST', body: formData })
+            .then(res => res.text())
+            .then(html => {
+                const content = document.getElementById('previewContent');
+                const block = document.getElementById('reviewPreview');
+
+                if (content && block) {
+                    content.innerHTML = html;
+                    block.classList.remove('d-none');
+                }
+            })
+            .catch(err => console.error('Preview error:', err))
+            .finally(() => {
+                if (previewBtn) {
+                    previewBtn.disabled = false;
+                    previewBtn.innerHTML = 'Preview';
+                }
             });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = '';
+    };
+
+    //  Watchlist AJAX Handler
+    //  Adds or removes movies from the user's watchlist
+    function setupWatchlistAJAX() {
+        const forms = document.querySelectorAll('.watchlist-form, form[action*="add_to_watch_list"]');
+
+        forms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const formData = new FormData(this);
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+
+                // Loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+                fetch(this.action, { method: 'POST', body: formData })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Network response error');
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Update button appearance
+                            if (data.in_watchlist) {
+                                submitBtn.innerHTML = 'In Watchlist';
+                                submitBtn.className = 'btn btn-success w-100';
+                            } else {
+                                submitBtn.innerHTML = 'Watch Later';
+                                submitBtn.className = 'btn btn-primary w-100';
+                            }
+
+                            if (typeof showNotification === 'function') {
+                                showNotification(data.message, 'success');
+                            }
+                        } else {
+                            // Display server-side error
+                            if (typeof showNotification === 'function') {
+                                showNotification(data.message || 'Error occurred.', 'error');
+                            }
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+
+                            if (data.redirect) {
+                                setTimeout(() => (window.location.href = data.redirect), 1500);
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Watchlist error:', err);
+                        if (typeof showNotification === 'function') {
+                            showNotification('An unexpected error occurred.', 'error');
+                        }
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    });
+
+                return false;
             });
         });
-    }    
-    // Form validation enhancement
+    }
+
+    //  Movie Card Hover Effects
+    //  Applies a hover animation to movie cards for visual enhancement
+    function setupMovieCardHover() {
+        const cards = document.querySelectorAll('.hover-lift');
+
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
+                this.style.transition = 'all 0.3s ease';
+            });
+
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    }
+
+    //  Form Enhancements
+    //  Adds Bootstrap validation and rating field validation
     function enhanceForms() {
         const forms = document.querySelectorAll('form');
+
         forms.forEach(form => {
-            // Add Bootstrap validation
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 if (!form.checkValidity()) {
                     e.preventDefault();
                     e.stopPropagation();
                 }
                 form.classList.add('was-validated');
-            }, false);
-            
-            // Real-time validation for specific fields
-            const ratingInputs = form.querySelectorAll('input[type="number"][min="1"][max="10"]');
-            ratingInputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    const value = parseInt(this.value);
-                    if (value < 1 || value > 10) {
-                        this.setCustomValidity('Įvertinimas turi būti tarp 1 ir 10');
-                    } else {
-                        this.setCustomValidity('');
-                    }
+            });
+
+            // Rating inputs (1-10)
+            form.querySelectorAll('input[type="number"][min="1"][max="10"]').forEach(input => {
+                input.addEventListener('input', function () {
+                    const v = parseInt(this.value, 10);
+                    this.setCustomValidity(v < 1 || v > 10 ? 'Rating must be between 1 and 10.' : '');
                 });
             });
         });
     }
-    
-    // Cookie Management Functions
-   
-    
-    // Set cookie
-    window.setCookie = function(name, value, days) {
-        let expires = "";
+
+    //  Basic Cookie Utility Functions
+    window.setCookie = function (name, value, days) {
+        let expires = '';
         if (days) {
             const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
+            date.setTime(date.getTime() + days * 86400000);
+            expires = '; expires=' + date.toUTCString();
         }
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        document.cookie = `${name}=${value || ''}${expires}; path=/`;
     };
-    
-    // Get cookie
-    window.getCookie = function(name) {
-        const nameEQ = name + "=";
-        const ca = document.cookie.split(';');
-        for(let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-        }
-        return null;
+
+    window.getCookie = function (name) {
+        const nameEQ = name + '=';
+        return document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith(nameEQ))?.substring(nameEQ.length) || null;
     };
-    
-    // Delete cookie
-    window.eraseCookie = function(name) {   
-        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
+    window.eraseCookie = function (name) {
+        document.cookie = `${name}=; Max-Age=-99999999; path=/`;
     };
-    
-    
-    // Run initialization functions
+
+    //  Initialization — runs when the page loads
     checkCookie();
     setupWatchlistAJAX();
     setupMovieCardHover();
     enhanceForms();
-    
-    // Mark page as loaded
+
     document.body.classList.add('js-loaded');
-    console.log('JS loaded');
-    
 });
 
-
-
-// Format date
-window.formatDate = function(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('lt-LT', {
+//  General Helper Functions (Formatting, Truncation, Stars, etc.)
+window.formatDate = function (dateString) {
+    return new Date(dateString).toLocaleDateString('lt-LT', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
 };
 
-// Truncate text
-window.truncateText = function(text, maxLength) {
-    if (text.length <= maxLength) return text;
-    return text.substr(0, maxLength) + '...';
+window.truncateText = function (text, max) {
+    return text.length <= max ? text : text.substring(0, max) + '...';
 };
 
-// Generate star rating HTML
-window.generateStars = function(rating, maxStars = 10) {
+window.generateStars = function (rating, max = 10) {
     let stars = '';
-    for (let i = 1; i <= maxStars; i++) {
-        if (i <= rating) {
-            stars += '<span class="text-warning">★</span>';
-        } else {
-            stars += '<span class="text-secondary">☆</span>';
-        }
+    for (let i = 1; i <= max; i++) {
+        stars += i <= rating
+            ? '<span class="text-warning">★</span>'
+            : '<span class="text-secondary">☆</span>';
     }
     return stars;
 };
 
-// Check if user is on mobile
-window.isMobile = function() {
+window.isMobile = function () {
     return window.innerWidth <= 768;
 };
 
-// Smooth scroll to element
-window.smoothScroll = function(elementId) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }
+window.smoothScroll = function (id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-
-// Global error handler
-window.addEventListener('error', function(e) {
-    console.error('Global error:', e.error);
-    
-    // Don't show alert for known/expected errors
-    if (e.message.includes('fetch') || e.message.includes('NetworkError')) {
-        // Network errors are common, just log them
-        return;
-    }
-    
-    // Show user-friendly error message for unexpected errors
-    if (!document.querySelector('.global-error-alert')) {
-        const alert = document.createElement('div');
-        alert.className = 'global-error-alert alert alert-danger position-fixed';
-        alert.style.bottom = '20px';
-        alert.style.right = '20px';
-        alert.style.zIndex = '9999';
-        alert.innerHTML = `
-            <strong>Klaida!</strong> Įvyko netikėta klaida.
-            <button class="btn btn-sm btn-outline-danger ms-2" onclick="this.parentElement.remove()">
-                ✕
-            </button>
-        `;
-        document.body.appendChild(alert);
-        
-        setTimeout(() => {
-            if (alert.parentNode) alert.remove();
-        }, 10000);
-    }
+//  Global Error Logger
+//  Logs unexpected JavaScript errors to the console without UI alerts
+window.addEventListener('error', function (e) {
+    console.error('Global JS Error:', e.error || e.message || e);
 });
 
-// Handle offline/online status
-window.addEventListener('offline', function() {
-    showNotification('Prarastas interneto ryšys. Kai kurios funkcijos gali neveikti.', 'warning');
+//  Online / Offline Status Notifications
+window.addEventListener('offline', function () {
+    if (typeof showNotification === 'function')
+        showNotification('Internet connection lost.', 'warning');
 });
 
-window.addEventListener('online', function() {
-    showNotification('Internetas atkurtas!', 'success');
+window.addEventListener('online', function () {
+    if (typeof showNotification === 'function')
+        showNotification('Connection restored.', 'success');
 });

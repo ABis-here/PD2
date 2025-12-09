@@ -62,18 +62,6 @@ CREATE TABLE watchlist (
     UNIQUE KEY unique_watchlist (user_id, movie_id)
 );
 
--- 8. Files table (for requirement #9: file handling)
-CREATE TABLE files (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    filename VARCHAR(255),
-    file_path VARCHAR(255),
-    uploaded_by INT,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    file_size INT,
-    file_type VARCHAR(50),
-    FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE SET NULL
-);
-
 -- Sample movies
 INSERT INTO movies (title, release_year, director, genre, description) VALUES
 ('Tamsos riteris', 2008, 'Christopher Nolan', 'Veiksmo', 'Betmeno kova su Džokeriu. Vienas geriausių superherojų filmų.'),

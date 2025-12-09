@@ -231,18 +231,7 @@ function setupWatchlistAJAX() {
     
     // Mark page as loaded
     document.body.classList.add('js-loaded');
-    
-    // Debug: Log initialization
-    console.log('Kino Duomenys JavaScript initialized');
-    console.log('Assignment requirements implemented:');
-    console.log('- #8: PHP include() demonstration');
-    console.log('- #10: Cookie handling');
-    console.log('- #15: AJAX functionality');
-    
-    // Demo: Show PHP include() functionality
-    if (typeof loadHeader === 'function') {
-        loadHeader();
-    }
+    console.log('JS loaded');
     
 });
 

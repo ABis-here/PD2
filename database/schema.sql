@@ -68,7 +68,15 @@ INSERT INTO movies (title, release_year, director, genre, description) VALUES
 ('Žiedų valdovas: Karaliaus sugrįžimas', 2003, 'Peter Jackson', 'Fantastika', 'Epinis fantastinis nuotykis, paskutinė trilogijos dalis.'),
 ('Inception', 2010, 'Christopher Nolan', 'Mokslinė fantastika', 'Sapnų vagystės. Galvosūkis apie realybę ir sapnus.'),
 ('Pulp Fiction', 1994, 'Quentin Tarantino', 'Kriminalinis', 'Ne chronologinė gangsterių istorija su nepamirštamais dialogais.'),
-('The Shawshank Redemption', 1994, 'Frank Darabont', 'Drama', 'Istorija apie viltį ir išsilaisvinimą kalėjime.');
+('The Shawshank Redemption', 1994, 'Frank Darabont', 'Drama', 'Istorija apie viltį ir išsilaisvinimą kalėjime.'),
+('Fight Club', 1999, 'David Fincher', 'Drama', 'Psichologinė drama apie tapatybę, vartotojiškumą ir anarchiją.'),
+('Forrest Gump', 1994, 'Robert Zemeckis', 'Drama', 'Šilta istorija apie paprastą vyrą, tapusį daugelio istorinių įvykių liudininku.'),
+('Matrix', 1999, 'The Wachowskis', 'Mokslinė fantastika', 'Realybės iliuzija, dirbtinis intelektas ir žmonijos kova už laisvę.'),
+('Gladiatorius', 2000, 'Ridley Scott', 'Veiksmo', 'Romėnų generolo keršto istorija Koliziejaus arenoje.'),
+('Interstellar', 2014, 'Christopher Nolan', 'Mokslinė fantastika', 'Kelionė per kosmosą ir laiką siekiant išgelbėti žmoniją.'),
+('Titanic', 1997, 'James Cameron', 'Romantinis', 'Tragiška meilės istorija legendinio laivo katastrofos fone.'),
+('Se7en', 1995, 'David Fincher', 'Trileris', 'Du detektyvai medžioja serijinį žudiką, paremtą septyniomis mirtinomis nuodėmėmis.'),
+('Žvaigždžių karai: Nauja viltis', 1977, 'George Lucas', 'Fantastika', 'Epinės kosminės sagos pradžia apie gėrio ir blogio kovą.');
 
 
 -- Sample actors
@@ -79,13 +87,56 @@ INSERT INTO actors (name, birth_year) VALUES
 ('Ian McKellen', 1939),
 ('Leonardo DiCaprio', 1974),
 ('John Travolta', 1954),
-('Tim Robbins', 1958);
+('Tim Robbins', 1958),
+('Morgan Freeman', 1937),
+('Brad Pitt', 1963),
+('Edward Norton', 1969),
+('Keanu Reeves', 1964),
+('Russell Crowe', 1964),
+('Matthew McConaughey', 1969),
+('Kate Winslet', 1975),
+('Brad Pitt (Se7en)', 1963),
+('Harrison Ford', 1942);
 
--- Connect movies with actors
+
 INSERT INTO movie_actors (movie_id, actor_id) VALUES
-(1, 1), (1, 2),  -- Tamsos riteris: Christian Bale, Heath Ledger
-(2, 3), (2, 4),  -- Žiedų valdovas: Elijah Wood, Ian McKellen
-(3, 5),          -- Inception: Leonardo DiCaprio
-(4, 6),          -- Pulp Fiction: John Travolta
-(5, 7);          -- Shawshank: Tim Robbins
+-- 1. Tamsos riteris
+(1, 1), (1, 2),
+
+-- 2. Žiedų valdovas: Karaliaus sugrįžimas
+(2, 3), (2, 4),
+
+-- 3. Inception
+(3, 5),
+
+-- 4. Pulp Fiction
+(4, 6),
+
+-- 5. The Shawshank Redemption
+(5, 7), (5, 8),
+
+-- 6. Fight Club
+(6, 9), (6, 10),
+
+-- 7. Forrest Gump
+(7, 8),
+
+-- 8. Matrix
+(8, 11),
+
+-- 9. Gladiatorius
+(9, 12),
+
+-- 10. Interstellar
+(10, 13),
+
+-- 11. Titanic
+(11, 5), (11, 14),
+
+-- 12. Se7en
+(12, 15), (12, 9),
+
+-- 13. Žvaigždžių karai: Nauja viltis
+(13, 16);
+
 

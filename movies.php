@@ -15,7 +15,12 @@ $genre = isset($_GET['genre']) ? $_GET['genre'] : '';
 $year_from = isset($_GET['year_from']) ? intval($_GET['year_from']) : 1900;
 $year_to = isset($_GET['year_to']) ? intval($_GET['year_to']) : date('Y');
 
-// Build SQL query with filters
+// Puslapiavimo nustatymai
+$limit = 10;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $limit;
+
+// Build SQL query with filters (be LIMIT)
 $sql = "
     SELECT m.*, 
            AVG(r.rating) as avg_rating,
@@ -47,8 +52,38 @@ $sql .= " AND (m.release_year IS NULL OR (m.release_year >= ? AND m.release_year
 $params[] = $year_from;
 $params[] = $year_to;
 
-// Complete SQL
+// Group by for aggregates
 $sql .= " GROUP BY m.id ORDER BY m.title";
+
+// Get total count for pagination
+$countSql = "SELECT COUNT(DISTINCT m.id) as total FROM movies m LEFT JOIN reviews r ON m.id = r.movie_id WHERE 1=1";
+
+// Add filters to count query
+$countParams = [];
+if (!empty($search)) {
+    $countSql .= " AND (m.title LIKE ? OR m.director LIKE ? OR m.description LIKE ?)";
+    $countParams[] = $searchParam;
+    $countParams[] = $searchParam;
+    $countParams[] = $searchParam;
+}
+
+if (!empty($genre) && $genre != 'all') {
+    $countSql .= " AND m.genre = ?";
+    $countParams[] = $genre;
+}
+
+$countSql .= " AND (m.release_year IS NULL OR (m.release_year >= ? AND m.release_year <= ?))";
+$countParams[] = $year_from;
+$countParams[] = $year_to;
+
+$totalResult = $db->fetchOne($countSql, $countParams);
+$totalMovies = $totalResult['total'] ?? 0;
+$totalPages = ceil($totalMovies / $limit);
+
+// Add LIMIT and OFFSET to main query
+$sql .= " LIMIT ? OFFSET ?";
+$params[] = $limit;
+$params[] = $offset;
 
 // Get movies from database
 $movies = $db->fetchAll($sql, $params);
@@ -106,7 +141,7 @@ include 'includes/header.php';
                             <div class="card bg-light">
                                 <div class="card-body text-center p-2">
                                     <h6 class="card-title mb-0">Iš viso filmų</h6>
-                                    <p class="display-6 mb-0"><?php echo count($movies); ?></p>
+                                    <p class="display-6 mb-0"><?php echo $totalMovies; ?></p>
                                 </div>
                             </div>
                         </div>
@@ -134,6 +169,15 @@ include 'includes/header.php';
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Page info -->
+                    <div class="mt-3 pt-3 border-top">
+                        <p class="mb-0">
+                            Rodomi filmai: <strong><?php echo min(($page - 1) * $limit + 1, $totalMovies); ?>-<?php echo min($page * $limit, $totalMovies); ?></strong> 
+                            iš <strong><?php echo $totalMovies; ?></strong>
+                            (puslapis <?php echo $page; ?> iš <?php echo max(1, $totalPages); ?>)
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -143,6 +187,8 @@ include 'includes/header.php';
                     <h4 class="card-title mb-3">Filtrai ir paieška</h4>
                     
                     <form method="GET" action="movies.php" class="row g-3">
+                        <input type="hidden" name="page" value="1">
+                        
                         <div class="col-md-6">
                             <label class="form-label">Paieška</label>
                             <input type="text" name="search" class="form-control" 
@@ -301,28 +347,59 @@ include 'includes/header.php';
                 <?php endforeach; ?>
                 
                 <!-- Pagination -->
-                <?php
-                // For now simple pagination - can be enhanced later
-                $totalMovies = count($movies);
-                $moviesPerPage = 10;
-                $totalPages = ceil($totalMovies / $moviesPerPage);
-                
-                if ($totalPages > 1):
-                    $currentPage = isset($_GET['page']) ? intval($_GET['page']) : 1;
-                ?>
+                <?php if ($totalPages > 1): ?>
                     <nav aria-label="Movie pages">
                         <ul class="pagination justify-content-center">
-                            <?php for ($i = 1; $i <= min($totalPages, 5); $i++): ?>
-                                <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
-                                    <a class="page-link" href="movies.php?page=<?php echo $i; 
-                                        if (!empty($search)) echo '&search=' . urlencode($search);
-                                        if (!empty($genre)) echo '&genre=' . urlencode($genre);
-                                        echo '&year_from=' . $year_from . '&year_to=' . $year_to;
-                                    ?>">
+                            <?php 
+                            // Previous page
+                            if ($page > 1): 
+                                $prevUrl = "movies.php?page=" . ($page - 1);
+                                if (!empty($search)) $prevUrl .= "&search=" . urlencode($search);
+                                if (!empty($genre) && $genre != 'all') $prevUrl .= "&genre=" . urlencode($genre);
+                                if ($year_from != 1900) $prevUrl .= "&year_from=" . $year_from;
+                                if ($year_to != date('Y')) $prevUrl .= "&year_to=" . $year_to;
+                            ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?php echo $prevUrl; ?>">
+                                        &laquo; Ankstesnis
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            
+                            <?php 
+                            // Calculate page range
+                            $start_page = max(1, $page - 2);
+                            $end_page = min($totalPages, $page + 2);
+                            
+                            for ($i = $start_page; $i <= $end_page; $i++): 
+                                $pageUrl = "movies.php?page=" . $i;
+                                if (!empty($search)) $pageUrl .= "&search=" . urlencode($search);
+                                if (!empty($genre) && $genre != 'all') $pageUrl .= "&genre=" . urlencode($genre);
+                                if ($year_from != 1900) $pageUrl .= "&year_from=" . $year_from;
+                                if ($year_to != date('Y')) $pageUrl .= "&year_to=" . $year_to;
+                            ?>
+                                <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                                    <a class="page-link" href="<?php echo $pageUrl; ?>">
                                         <?php echo $i; ?>
                                     </a>
                                 </li>
                             <?php endfor; ?>
+                            
+                            <?php 
+                            // Next page
+                            if ($page < $totalPages): 
+                                $nextUrl = "movies.php?page=" . ($page + 1);
+                                if (!empty($search)) $nextUrl .= "&search=" . urlencode($search);
+                                if (!empty($genre) && $genre != 'all') $nextUrl .= "&genre=" . urlencode($genre);
+                                if ($year_from != 1900) $nextUrl .= "&year_from=" . $year_from;
+                                if ($year_to != date('Y')) $nextUrl .= "&year_to=" . $year_to;
+                            ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?php echo $nextUrl; ?>">
+                                        Kitas &raquo;
+                                    </a>
+                                </li>
+                            <?php endif; ?>
                         </ul>
                     </nav>
                 <?php endif; ?>
@@ -340,11 +417,14 @@ include 'includes/header.php';
                                     <label class="form-label">Filmas *</label>
                                     <select name="movie_id" class="form-control" required>
                                         <option value="">Pasirinkite filmą</option>
-                                        <?php foreach ($movies as $movie): ?>
-                                            <option value="<?php echo $movie['id']; ?>">
-                                                <?php echo htmlspecialchars($movie['title']); ?>
-                                                <?php if ($movie['release_year']): ?>
-                                                    (<?php echo $movie['release_year']; ?>)
+                                        <?php 
+                                        // Get all movies for dropdown
+                                        $allMovies = $db->fetchAll("SELECT id, title, release_year FROM movies ORDER BY title");
+                                        foreach ($allMovies as $movieOption): ?>
+                                            <option value="<?php echo $movieOption['id']; ?>">
+                                                <?php echo htmlspecialchars($movieOption['title']); ?>
+                                                <?php if ($movieOption['release_year']): ?>
+                                                    (<?php echo $movieOption['release_year']; ?>)
                                                 <?php endif; ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -403,6 +483,7 @@ include 'includes/header.php';
         </section>
     </div>
 </main>
+
 <?php
 // Close database connection
 $db->close();
